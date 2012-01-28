@@ -30,10 +30,9 @@ ifeq ($(AWAKEN_BUILD),)
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.config.ringtone?=Ring_Synth_04.ogg \
     ro.config.notification_sound?=pixiedust.ogg \
+    ro.com.android.dataroaming?=true \
 
 endif
-PRODUCT_PRODUCT_PROPERTIES += \
-    ro.com.android.dataroaming?=true \
 
 # More AOSP packages
 PRODUCT_PACKAGES += \
