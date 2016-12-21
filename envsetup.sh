@@ -1638,4 +1638,4 @@ addcompletions
 
 export ANDROID_BUILD_TOP=$(gettop)
 
-. vendor/awaken/build/envsetup.sh
+. $ANDROID_BUILD_TOP/vendor/awaken/build/envsetup.sh
