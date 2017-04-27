@@ -122,6 +122,13 @@ dalvik\..*
 libcore\..*
 android\..*
 com\.android\..*
+
+# CAF
+org\.codeaurora\..*
+
+# Awaken
+com\.awaken\..*
+
 ###################################################
 # android.test.base.jar
 junit\.extensions
