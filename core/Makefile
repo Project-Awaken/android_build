@@ -4143,6 +4143,10 @@ endif
     build_otatools_package := false
   endif
 
+ifeq ($(TARGET_FORCE_OTA_PACKAGE),true)
+build_ota_package := true
+endif
+
 ifeq ($(build_otatools_package),true)
 
 INTERNAL_OTATOOLS_MODULES := \
