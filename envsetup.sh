@@ -678,7 +678,7 @@ function lunch()
         check_product $product
     fi
 
-    TARGET_PRODUCT=$product
+    export TARGET_PRODUCT=$product
     TARGET_BUILD_VARIANT=$variant
     TARGET_PLATFORM_VERSION=$version
     build_build_var_cache
@@ -697,7 +697,6 @@ function lunch()
         return 1
     fi
 
-    export TARGET_PRODUCT
     export TARGET_BUILD_VARIANT
     if [ -n "$version" ]; then
       export TARGET_PLATFORM_VERSION
