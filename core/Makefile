@@ -5019,14 +5019,10 @@ name := Project-Awaken-$(TARGET_DEVICE)-$(shell date +"%Y%m%d")
 INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
 INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
 
-ifeq ($(TARGET_BUILD_VARIANT),user)
+ifeq ($(TARGET_EXCLUDE_BACKUPTOOL),true)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 else
-ifneq ($(AWAKEN_BUILD),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
-else
-    $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
-endif
 endif
 
 $(INTERNAL_OTA_PACKAGE_TARGET): KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
