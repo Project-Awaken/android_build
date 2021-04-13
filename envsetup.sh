@@ -663,8 +663,7 @@ function lunch()
     TARGET_BUILD_VARIANT=$variant \
     TARGET_PLATFORM_VERSION=$version \
     build_build_var_cache
-    check_product $product
-    if [ $? -ne 0 ]
+    if ! check_product $product
     then
         # if we can't find the product, try to grab it from our github
         T=$(gettop)
