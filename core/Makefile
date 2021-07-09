@@ -3487,6 +3487,17 @@ ifneq ($(words $(sort $(INTERNAL_AVB_PARTITIONS_IN_CHAINED_VBMETA_IMAGES))),$(wo
   $(error BOARD_AVB_VBMETA_SYSTEM and BOARD_AVB_VBMETA_VENDOR cannot have duplicates)
 endif
 
+# When building a standalone recovery image for non-A/B devices, recovery image must be self-signed
+# to be verified independently, and cannot be chained into vbmeta.img. See the link below for
+# details.
+ifeq ($(TARGET_OTA_ALLOW_NON_AB),true)
+ifneq ($(INSTALLED_RECOVERYIMAGE_TARGET),)
+$(if $(BOARD_AVB_RECOVERY_KEY_PATH),,\
+    $(error BOARD_AVB_RECOVERY_KEY_PATH must be defined for if non-A/B is supported. \
+            See https://android.googlesource.com/platform/external/avb/+/master/README.md#booting-into-recovery))
+endif
+endif
+
 # Appends os version and security patch level as a AVB property descriptor
 
 BOARD_AVB_SYSTEM_ADD_HASHTREE_FOOTER_ARGS += \
@@ -3571,8 +3582,11 @@ $(eval _signing_args := INTERNAL_AVB_$(PART)_SIGNING_ARGS)
 $(eval $(_signing_args) := \
     --algorithm $($(_signing_algorithm)) --key $($(_key_path)))
 
-$(eval INTERNAL_AVB_MAKE_VBMETA_IMAGE_ARGS += \
-    --chain_partition $(part):$($(_rollback_index_location)):$(AVB_CHAIN_KEY_DIR)/$(part).avbpubkey)
+# The recovery partition in non-A/B devices should be verified separately. Skip adding the chain
+# partition descriptor for recovery partition into vbmeta.img.
+$(if $(or $(filter-out true,$(TARGET_OTA_ALLOW_NON_AB)),$(filter-out recovery,$(part))),\
+    $(eval INTERNAL_AVB_MAKE_VBMETA_IMAGE_ARGS += \
+        --chain_partition $(part):$($(_rollback_index_location)):$(AVB_CHAIN_KEY_DIR)/$(part).avbpubkey))
 
 # Set rollback_index via footer args for non-chained vbmeta image. Chained vbmeta image will pick up
 # the index via a separate flag (e.g. BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX).
