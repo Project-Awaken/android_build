@@ -528,15 +528,22 @@ class BuildInfo(object):
     # If provided a partition for this property, only look within that
     # partition's build.prop.
     if prop in BuildInfo._RO_PRODUCT_RESOLVE_PROPS:
-      prop = prop.replace("ro.product", "ro.product.{}".format(prop_partition))
+        prop = prop.replace("ro.product", "ro.product.{}".format(prop_partition))
     else:
-      prop = prop.replace("ro.", "ro.{}.".format(prop_partition))
+        prop = prop.replace("ro.", "ro.{}.".format(prop_partition))
 
+    # Check if prop matches the pattern "*.build.date.utc"
+    if fnmatch.fnmatch(prop, "*.build.date.utc"):
+        # Run the "date +%s" command and capture its output
+        timestamp_str = subprocess.check_output(['date', '+%s']).decode('utf-8').strip()
+        return timestamp_str
+
+    # Continue with other checks or return values as needed
     prop_val = self._GetRawBuildProp(prop, partition)
     if prop_val is not None:
-      return prop_val
-    raise ExternalError("couldn't find %s in %s.build.prop" %
-                        (prop, partition))
+        return prop_val
+
+    raise ExternalError("couldn't find %s in %s.build.prop" % (prop, partition))
 
   def GetBuildProp(self, prop):
     """Returns the inquired build property from the standard build.prop file."""
